@@ -25,3 +25,9 @@ resource "snowflake_schema" "demo_gold_schema" {
   name     = "GOLD"
   comment  = "Gold layer for business-ready aggregated data"
 }
+
+resource "snowflake_schema" "demo_utility_schema" {
+  database = snowflake_database.demo_schema_drift_db.name
+  name     = "UTILITY"
+  comment  = "Utility schema for schema drift monitoring and logging"
+}
