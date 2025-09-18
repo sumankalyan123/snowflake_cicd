@@ -17,6 +17,25 @@ variable "data_retention_days" {
   default     = 1
 }
 
+# Warehouse Variables
+variable "warehouse_name" {
+  description = "Name of the warehouse to create"
+  type        = string
+  default     = "DEVOPS_WH"
+}
+
+variable "warehouse_size" {
+  description = "Size of the warehouse (X-SMALL, SMALL, MEDIUM, LARGE, X-LARGE, XX-LARGE, XXX-LARGE, X4-LARGE, X5-LARGE, X6-LARGE)"
+  type        = string
+  default     = "X-SMALL"
+}
+
+variable "auto_suspend_seconds" {
+  description = "Number of seconds of inactivity after which the warehouse is automatically suspended"
+  type        = number
+  default     = 60
+}
+
 # Snowflake Connection Variables
 variable "SNOWFLAKE_ACCOUNT" {
   description = "Snowflake account name"
