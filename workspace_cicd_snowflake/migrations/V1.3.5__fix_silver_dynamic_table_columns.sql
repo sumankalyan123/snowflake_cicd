@@ -1,8 +1,8 @@
--- Migration: V1.3.2__create_silver_dynamic_table.sql
--- Description: Create dynamic table in SILVER schema based on BRONZE.SALES
+-- Migration: V1.3.5__fix_silver_dynamic_table_columns.sql
+-- Description: Fix SILVER dynamic table to maintain same columns as BRONZE
 -- Created: $(date)
 
--- Create dynamic table in SILVER schema
+-- Recreate SILVER dynamic table with same columns as BRONZE
 CREATE OR REPLACE DYNAMIC TABLE DEMO_SCHEMA_DRIFT.SILVER.SALES_CLEANED
 TARGET_LAG = DOWNSTREAM
 WAREHOUSE = 'DEVOPS_WH'
@@ -12,8 +12,7 @@ SELECT
     PRODUCT_NAME,
     QUANTITY,
     UNIT_PRICE,
-    SALE_DATE,
-    CURRENT_TIMESTAMP() AS PROCESSED_AT
+    SALE_DATE
 FROM DEMO_SCHEMA_DRIFT.BRONZE.SALES
 WHERE SALE_ID IS NOT NULL
   AND PRODUCT_NAME IS NOT NULL
