@@ -13,9 +13,31 @@ on:
 # Remove TF_CLI_ARGS as it's not supported in this Terraform version
 
 jobs:
+  check-terraform-changes:
+    name: 'Check Terraform Changes'
+    runs-on: ubuntu-latest
+    outputs:
+      terraform-changed: ${{ steps.changes.outputs.terraform }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Check for Terraform changes
+      uses: dorny/paths-filter@v2
+      id: changes
+      with:
+        filters: |
+          terraform:
+            - 'workspace_cicd_snowflake/**/*.tf'
+            - 'workspace_cicd_snowflake/**/*.tfvars'
+
   plan-and-validate:
     name: 'Plan and Validate'
     runs-on: ubuntu-latest
+    needs: check-terraform-changes
+    if: ${{ needs.check-terraform-changes.outputs.terraform-changed == 'true' }}
     environment: development
 
     steps:
@@ -67,8 +89,8 @@ jobs:
   apply:
     name: 'Apply'
     runs-on: ubuntu-latest
-    needs: plan-and-validate
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: [check-terraform-changes, plan-and-validate]
+    if: ${{ needs.check-terraform-changes.outputs.terraform-changed == 'true' && github.ref == 'refs/heads/main' && github.event_name == 'push' }}
     environment: production
 
     steps:
