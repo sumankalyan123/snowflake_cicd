@@ -10,8 +10,7 @@ on:
     paths:
       - 'workspace_cicd_snowflake/**'
 
-env:
-  TF_CLI_ARGS: '-chdir=workspace_cicd_snowflake'
+# Remove TF_CLI_ARGS as it's not supported in this Terraform version
 
 jobs:
   plan-and-validate:
@@ -31,19 +30,23 @@ jobs:
     - name: Terraform Format Check
       id: fmt
       run: terraform fmt -check
+      working-directory: workspace_cicd_snowflake
       continue-on-error: true
 
     - name: Terraform Init
       id: init
       run: terraform init
+      working-directory: workspace_cicd_snowflake
 
     - name: Terraform Validate
       id: validate
       run: terraform validate
+      working-directory: workspace_cicd_snowflake
 
     - name: Terraform Plan
       id: plan
       run: terraform plan -no-color -out=tfplan
+      working-directory: workspace_cicd_snowflake
       continue-on-error: true
 
     - name: Upload Plan Artifact
@@ -78,6 +81,8 @@ jobs:
 
     - name: Terraform Init
       run: terraform init
+      working-directory: workspace_cicd_snowflake
 
     - name: Terraform Apply
       run: terraform apply -auto-approve tfplan
+      working-directory: workspace_cicd_snowflake
