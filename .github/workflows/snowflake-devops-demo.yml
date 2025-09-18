@@ -2,6 +2,11 @@ name: apply_schema_migration
 
 # Controls when the action will run. 
 on:
+  workflow_run:
+    workflows: ["Terraform Cloud Deploy"]
+    types: [completed]
+    branches: [main]
+  
   pull_request:
     types: [closed]
     branches:
@@ -15,7 +20,10 @@ on:
 jobs:
   deploy-snowflake-changes-job:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true
+    if: |
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') ||
+      (github.event_name == 'pull_request' && github.event.pull_request.merged == true) ||
+      github.event_name == 'workflow_dispatch'
 
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
