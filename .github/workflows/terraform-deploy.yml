@@ -27,6 +27,8 @@ jobs:
       with:
         terraform_version: 1.13.3
         terraform_cloud_token: ${{ secrets.TF_API_TOKEN }}
+      env:
+        TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
 
     - name: Terraform Format Check
       id: fmt
@@ -38,6 +40,8 @@ jobs:
       id: init
       run: terraform init
       working-directory: workspace_cicd_snowflake
+      env:
+        TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
 
     - name: Terraform Validate
       id: validate
@@ -48,6 +52,8 @@ jobs:
       id: plan
       run: terraform plan -no-color -out=tfplan
       working-directory: workspace_cicd_snowflake
+      env:
+        TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
       continue-on-error: true
 
     - name: Upload Plan Artifact
@@ -74,6 +80,8 @@ jobs:
       with:
         terraform_version: 1.13.3
         terraform_cloud_token: ${{ secrets.TF_API_TOKEN }}
+      env:
+        TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
 
     - name: Download Plan Artifact
       uses: actions/download-artifact@v4
@@ -84,7 +92,11 @@ jobs:
     - name: Terraform Init
       run: terraform init
       working-directory: workspace_cicd_snowflake
+      env:
+        TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
 
     - name: Terraform Apply
       run: terraform apply -auto-approve tfplan
       working-directory: workspace_cicd_snowflake
+      env:
+        TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
